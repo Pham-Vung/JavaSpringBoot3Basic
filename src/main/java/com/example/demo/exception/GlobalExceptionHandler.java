@@ -1,5 +1,6 @@
 package com.example.demo.exception;
 
+import com.example.demo.dto.request.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,13 +8,38 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice // khai báo này để biết class này quản lý các exception
 public class GlobalExceptionHandler {
-    @ExceptionHandler(value = RuntimeException.class) // value truyền vào là kiểu exception muốn bắt, tất cả các RuntimeException sẽ được xử lý tại đây
-    ResponseEntity<String> handlingRuntimeException(RuntimeException exception) {
-        return ResponseEntity.badRequest().body(exception.getMessage());
+    @ExceptionHandler(value = Exception.class) // khi exception xảy ra mà chưa được bắt thì mặc định sẽ được bắt tại đây
+    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = AppException.class) // value truyền vào là kiểu exception muốn bắt, tất cả các RuntimeException sẽ được xử lý tại đây
+    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<String> handlingValidation(MethodArgumentNotValidException exception) {
-        return ResponseEntity.badRequest().body(exception.getFieldError().getDefaultMessage());
+    ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
+        String enumKey = exception.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+        } catch (IllegalArgumentException e) {
+
+        }
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 }

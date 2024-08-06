@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.entity.User;
@@ -17,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping // tạo user
-    User createUser(@RequestBody @Valid UserCreationRequest request) { // map data từ requestbody vào object
-         return userService.createUser(request);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) { // map data từ requestbody vào object
+         ApiResponse<User> apiResponse = new ApiResponse<>();
+         apiResponse.setResult(userService.createUser(request));
+         return apiResponse;
     }
 
     @GetMapping

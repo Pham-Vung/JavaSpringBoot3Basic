@@ -33,6 +33,8 @@ public class GlobalExceptionHandler {
 
         try {
             errorCode = ErrorCode.valueOf(enumKey);
+            //var constraintViolation =
+                  //  exception.getBindingResult().getAllErrors().getFirs
         } catch (IllegalArgumentException e) {
 
         }

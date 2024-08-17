@@ -12,7 +12,7 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     User toUser(UserCreationRequest request);
 
-    @Mapping(target = "lastName", ignore = true)// không trả về lastName
+//    @Mapping(target = "lastName", ignore = true)// không trả về lastName
     UserResponse toUserResponse(User user);
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

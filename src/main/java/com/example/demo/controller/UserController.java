@@ -23,10 +23,10 @@ public class UserController {
     UserService userService;
 
     @PostMapping // tạo user
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) { // map data từ requestbody vào object
-         ApiResponse<User> apiResponse = new ApiResponse<>();
-         apiResponse.setResult(userService.createUser(request));
-         return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) { // map data từ requestbody vào object
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.createUser(request))
+                .build();
     }
 
     @GetMapping

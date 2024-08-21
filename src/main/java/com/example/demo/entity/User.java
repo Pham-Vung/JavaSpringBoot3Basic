@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 // class này là một table
 @Data
@@ -26,4 +27,13 @@ public class User {
     String firstName;
     String lastName;
     LocalDate dob;
+
+    /**
+     * Set là một tập hợp các phần tử duy nhất, điều này có nghĩa là
+     * mỗi phần tử chỉ được lưu trữ một lần trong Set.
+     * Thứ hai, các phần tử trong Set không được sắp xếp theo bất kỳ
+     * thứ tự nào và thứ tự của chúng có thể thay đổi khi bạn thêm
+     * hoặc xóa các phần tử
+     */
+    Set<String> roles;
 }

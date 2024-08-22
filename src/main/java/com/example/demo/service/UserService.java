@@ -12,16 +12,22 @@ import com.example.demo.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // tạo hàm tạo với tất cả các thuộc tính
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)// makeFinal = true để nếu k khai báo gì thì tự động các fiel là private final
+@Slf4j
 public class UserService {
     // layer này gọi xuống layer UserRepository
    UserRepository userRepository;
@@ -53,12 +59,26 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public List<UserResponse> getUsers() {
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
 
+        User user = userRepository.findByUsername(name).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
+        );
+
+        return userMapper.toUserResponse(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")//Pre được kiểm tra trước khi method nàyđc thực hiện
+    public List<UserResponse> getUsers() {
+        log.info("In method get Users");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
+    @PostAuthorize("returnObject.username == authentication.name")// kiểm tra sau khi method được thực hiện xong, nếu thỏa điều kiện post thì return, nếu không thì chặn lại
     public UserResponse getUser(String id) {
+        log.info("In method get user by Id");
         return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 

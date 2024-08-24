@@ -5,7 +5,6 @@ import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.dto.respone.UserResponse;
 import com.example.demo.entity.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")

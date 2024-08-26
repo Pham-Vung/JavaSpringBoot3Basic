@@ -8,6 +8,7 @@ import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class UserService {
     // layer này gọi xuống layer UserRepository
    UserRepository userRepository;
    UserMapper userMapper;
+   RoleRepository roleRepository;
    PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request) {
@@ -77,16 +79,17 @@ public class UserService {
     @PostAuthorize("returnObject.username == authentication.name")// kiểm tra sau khi method được thực hiện xong, nếu thỏa điều kiện post thì return, nếu không thì chặn lại
     public UserResponse getUser(String id) {
         log.info("In method get user by Id");
-        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
+        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        userMapper.updateUser(user, request);// tương đuương với dòng code dưới
-//        user.setPassword(request.getPassword());
-//        user.setFirstName(request.getFirstName());
-//        user.setLastName(request.getLastName());
-//        user.setDob(request.getDob());
+
+        userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

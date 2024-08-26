@@ -45,8 +45,10 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId) {
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userId))
+                .build();
     }
 
     @GetMapping("/myInfo")
@@ -57,13 +59,17 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    UserResponse updateUser(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
-        return userService.updateUser(userId, request);
+    ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId, request))
+                .build();
     }
 
     @DeleteMapping("/{userId}")
-    String deleteUser(@PathVariable String userId) {
+    ApiResponse<String> deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
-        return "User has been deleted";
+        return ApiResponse.<String>builder()
+                .result("User has been deleted")
+                .build();
     }
 }

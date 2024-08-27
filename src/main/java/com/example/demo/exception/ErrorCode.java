@@ -13,7 +13,8 @@ public enum ErrorCode {
     INVALID_PASSWORD(1004, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),// tìm kiếm người dùng có trogn hệ thống
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),//không có the đăng nhập được
-    UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN)//xảy ra khi tài khoản xem được tất cả user không là admin
+    UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),//xảy ra khi tài khoản xem được tất cả user không là admin
+    INVALID_DOB(1008,"Invalid date of birth", HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

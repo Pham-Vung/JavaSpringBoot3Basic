@@ -11,7 +11,7 @@ public enum ErrorCode {
     USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),// kiểm tra username đã có trong hệ thống chưa
     USERNAME_INVALID(1003, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(1004, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),// tìm kiếm người dùng có trogn hệ thống
+    USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),// tìm kiếm người dùng có trong hệ thống
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),//không có the đăng nhập được
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),//xảy ra khi tài khoản xem được tất cả user không là admin
     INVALID_DOB(1008,"Your age must be at least {min}", HttpStatus.BAD_REQUEST)

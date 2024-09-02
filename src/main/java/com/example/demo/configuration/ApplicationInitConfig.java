@@ -21,26 +21,26 @@ import java.util.HashSet;
 public class ApplicationInitConfig {
 
     /**
-     *  Autowired để Spring sẽ tự động tiêm một đối tượng của PasswordEncoder
-     *  vào passwordEncode mà không cần bạn phải khởi tạo thủ công.
+     * Autowired để Spring sẽ tự động tiêm một đối tượng của PasswordEncoder
+     * vào passwordEncode mà không cần bạn phải khởi tạo thủ công.
      */
     PasswordEncoder passwordEncoder;
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-           if (userRepository.findByUsername("admin").isEmpty()) {
-               var roles = new HashSet<String>();
-               roles.add(Role.ADMIN.name());
-               User user = User.builder()
-                       .username("admin")
-                       .password(passwordEncoder.encode("admin"))
-                       //.roles(roles)
-                       .build();
+            if (userRepository.findByUsername("admin").isEmpty()) {
+                var roles = new HashSet<String>();
+                roles.add(Role.ADMIN.name());
+                User user = User.builder()
+                        .username("admin")
+                        .password(passwordEncoder.encode("admin"))
+                        //.roles(roles)
+                        .build();
 
-               userRepository.save(user);
-               log.warn("default user has been created with default password: amin, please change it");
-           }
+                userRepository.save(user);
+                log.warn("default user has been created with default password: amin, please change it");
+            }
         };
     }
 }

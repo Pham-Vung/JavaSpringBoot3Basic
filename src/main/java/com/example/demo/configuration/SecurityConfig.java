@@ -33,7 +33,7 @@ public class SecurityConfig {
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
 
@@ -53,7 +53,8 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    @Bean// bean để method này để bất cứ nào mình yêu cầu một bean kiểu PasswordEncoder từ Spring, Spring sẽ cung cấp đối tượng này
+    @Bean
+// bean để method này để bất cứ nào mình yêu cầu một bean kiểu PasswordEncoder từ Spring, Spring sẽ cung cấp đối tượng này
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }

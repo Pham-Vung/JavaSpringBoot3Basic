@@ -30,7 +30,7 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
         try {
             var response = authenticationService.introspect(IntrospectRequest.builder()
-                            .token(token)
+                    .token(token)
                     .build());
 
             if (!response.isValid()) {

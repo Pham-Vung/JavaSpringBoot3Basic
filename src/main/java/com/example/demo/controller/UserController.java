@@ -25,6 +25,7 @@ public class UserController {
 
     @PostMapping // tạo user
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) { // map data từ requestbody vào object
+        log.info("Controller: create User");
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();

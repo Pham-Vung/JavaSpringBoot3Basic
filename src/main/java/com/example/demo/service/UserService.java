@@ -3,6 +3,9 @@ package com.example.demo.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.example.demo.constant.PredefinedRole;
+import com.example.demo.entity.Role;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +16,6 @@ import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.dto.respone.UserResponse;
 import com.example.demo.entity.User;
-import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
@@ -39,16 +41,6 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request) {
-
-        log.info("Service: create User");
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTED);
-        }
-
-        //        UserCreationRequest request1 = UserCreationRequest.builder()
-        //                .username("abc")
-        //                .lastName("bchbd")
-        //                .build();
         User user = userMapper.toUser(request); // tương đương với các dòng code dưới
         //        user.setUsername(request.getUsername());
         //        user.setPassword(request.getPassword());
@@ -57,12 +49,18 @@ public class UserService {
         //        user.setDob(request.getDob());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
-        // user.setRoles(roles);
+        user.setRoles(roles);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        try {
+            user = userRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
